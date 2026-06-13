@@ -1,0 +1,45 @@
+{
+    "name": "yehia-tarek/laravel-erpnext",
+    "description": "A Laravel package for interacting with ERPNext / Frappe REST API",
+    "type": "library",
+    "keywords": ["laravel", "erpnext", "frappe", "rest-api", "erp"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yehia Tarek",
+            "email": "qwaser501@gmail.com"
+        }
+    ],
+    "version": "1.0.0",
+    "require": {
+        "php": "^8.1"
+
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0",
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "YehiaTarek\\ERPNext\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YehiaTarek\\ERPNext\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YehiaTarek\\ERPNext\\ERPNextServiceProvider"
+            ],
+            "aliases": {
+                "ERPNext": "YehiaTarek\\ERPNext\\Facades\\ERPNext"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
