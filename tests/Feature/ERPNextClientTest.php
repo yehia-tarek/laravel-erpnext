@@ -1,6 +1,6 @@
 <?php
 
-namespace \ERPNext\Tests\Feature;
+namespace YehiaTarek\ERPNext\Tests\Feature;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;

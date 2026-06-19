@@ -68,16 +68,16 @@ class ERPNextManager
             ));
 
         $baseUrl = rtrim($cfg['base_url'] ?? '', '/');
-        $auth    = $this->resolveAuth($cfg['auth'] ?? []);
+        $auth    = $this->resolveAuth($cfg['auth'] ?? [], $baseUrl);
 
         return new ERPNextClient($baseUrl, $auth, $cfg);
     }
 
-    private function resolveAuth(array $auth): AuthDriver
+    private function resolveAuth(array $auth, string $baseUrl): AuthDriver
     {
         return match ($auth['method'] ?? 'token') {
             'token'    => new TokenAuth($auth['api_key'] ?? '', $auth['api_secret'] ?? ''),
-            'password' => new PasswordAuth('', $auth['username'] ?? '', $auth['password'] ?? []),
+            'password' => new PasswordAuth($baseUrl, $auth['username'] ?? '', $auth['password'] ?? []),
             'oauth'    => new OAuthAuth($auth['access_token'] ?? ''),
             default    => throw new InvalidArgumentException(
                 "Unknown ERPNext auth method: {$auth['method']}. Supported: token, password, oauth"

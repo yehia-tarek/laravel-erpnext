@@ -91,7 +91,7 @@ class ERPNextClient
     public function deleteDocument(string $doctype, string $name): bool
     {
         $response = $this->delete("/api/resource/{$doctype}/{$name}");
-        return ($response['data'] ?? '') === 'ok';
+        return ($response['message'] ?? '') === 'ok';
     }
 
     // =========================================================================
@@ -358,7 +358,6 @@ class ERPNextClient
             'timeout'         => $this->config['http']['timeout'] ?? 30,
             'connect_timeout' => $this->config['http']['connect_timeout'] ?? 10,
             'verify'          => $this->config['http']['verify'] ?? true,
-            'http_errors'     => false, // We handle errors manually
         ]);
     }
 }

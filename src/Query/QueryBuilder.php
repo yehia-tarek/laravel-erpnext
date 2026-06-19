@@ -214,13 +214,7 @@ class QueryBuilder
      */
     public function count(): int
     {
-        // Use a dedicated fields=["name"] + high limit to count; Frappe doesn't
-        // expose a native count endpoint on the resource API, so we page through.
-        $params = [
-            'limit_start'       => 0,
-            'limit_page_length' => 500,
-            'fields'            => json_encode(['name']),
-        ];
+        $params = ['doctype' => $this->doctype];
 
         if (! empty($this->filters)) {
             $params['filters'] = json_encode($this->filters);
@@ -231,10 +225,10 @@ class QueryBuilder
         }
 
         $response = $this->client->get(
-            "/api/resource/{$this->doctype}",
+            '/api/method/frappe.client.get_count',
             ['query' => $params]
         );
 
-        return count($response['data'] ?? []);
+        return (int) ($response['message'] ?? 0);
     }
 }
