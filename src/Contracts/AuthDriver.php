@@ -2,12 +2,13 @@
 
 namespace YehiaTarek\ERPNext\Contracts;
 
-interface AuthDriver
+abstract class AuthDriver
 {
-    /**
-     * Return the headers needed to authenticate every HTTP request.
-     *
-     * @return array<string, string>
-     */
-    public function getHeaders(): array;
+    abstract public function getHeaders(): array;
+
+    // Default: no-op. Override in PasswordAuth.
+    public function authenticate(\GuzzleHttp\Client $http): void {}
+
+    // Default: no cookie jar. Override in PasswordAuth.
+    public function getCookieJar(): ?\GuzzleHttp\Cookie\CookieJar { return null; }
 }

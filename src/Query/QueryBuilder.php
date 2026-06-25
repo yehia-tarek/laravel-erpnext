@@ -99,6 +99,15 @@ class QueryBuilder
     }
 
     /**
+     * Specify link fields to expand (returns the linked document inline).
+     */
+    public function expandLinks(): static
+    {
+        $this->expandLinks = true;
+        return $this;
+    }
+
+    /**
      * Set the ordering.
      *
      * @param  string  $field
@@ -184,12 +193,16 @@ class QueryBuilder
             $params['expand'] = json_encode($this->expand);
         }
 
+        if ($this->expandLinks) {
+            $params['expand_links'] = 'True';
+        }
+
         if ($this->orderBy !== null) {
             $params['order_by'] = $this->orderBy;
         }
 
         if ($this->debug) {
-            $params['debug'] = 'True';
+            $params['debug'] = 1;
         }
 
         $response = $this->client->get(

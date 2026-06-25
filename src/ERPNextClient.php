@@ -25,10 +25,7 @@ class ERPNextClient
     ) {
         $this->http = $this->buildHttpClient();
 
-        // Perform session login for password auth
-        if ($auth instanceof PasswordAuth) {
-            $auth->authenticate($this->http);
-        }
+        $this->auth->authenticate($this->http);
     }
 
     // =========================================================================
@@ -154,6 +151,12 @@ class ERPNextClient
         ?string $fieldname = null,
         bool    $isPrivate = false,
     ): array {
+        if (! file_exists($filePath) || ! is_readable($filePath)) {
+            throw new \InvalidArgumentException(
+                "Cannot upload file: path does not exist or is not readable: {$filePath}"
+            );
+        }
+
         $multipart = [
             [
                 'name'     => 'file',
@@ -281,8 +284,8 @@ class ERPNextClient
         );
 
         // For password auth, inject cookie jar
-        if ($this->auth instanceof PasswordAuth) {
-            $options['cookies'] = $this->auth->getCookieJar();
+        if ($jar = $this->auth->getCookieJar()) {
+            $options['cookies'] = $jar;
         }
 
         // Merge headers
@@ -345,10 +348,10 @@ class ERPNextClient
         }
 
         throw match (true) {
-            $statusCode === 404                               => new DocumentNotFoundException($message, 404, $e, $decoded),
-            $statusCode === 401 || $statusCode === 403        => new AuthenticationException($message, $statusCode, $e, $decoded),
-            $excType === 'ValidationError'                    => new ValidationException($message, 422, $e, $decoded),
-            default                                           => new ERPNextException($message, $statusCode, $e, $decoded),
+            $statusCode === 404                                     => new DocumentNotFoundException($message, 404, $e, $decoded),
+            $statusCode === 401 || $statusCode === 403              => new AuthenticationException($message, $statusCode, $e, $decoded),
+            $excType === 'ValidationError' || $statusCode === 422   => new ValidationException($message, 422, $e, $decoded),
+            default                                                 => new ERPNextException($message, $statusCode, $e, $decoded),
         };
     }
 
